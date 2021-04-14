@@ -11,7 +11,7 @@ const tokenCheck = require('../middleware/token-check');
 //     next();
 // });
 
-router.get('/', tokenCheck, habitController.loadHabits);
+router.get('/habits', tokenCheck, habitController.loadHabits);
 
 router.post('/add-habit', tokenCheck, habitController.addNewHabit);
 
