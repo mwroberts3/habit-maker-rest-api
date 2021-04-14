@@ -50,39 +50,39 @@ exports.loadHabits = async (req, res, next) => {
         }
     }
 
-    // habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
+    habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
 
-    // // push retreived data into new array to hide userId
-    // Array.from(habits).forEach((habit) => {
-    //     let habitToLoad = {};
-    //     habitToLoad.active = habit.active;
-    //     habitToLoad.description = habit.description;
-    //     habitToLoad.goal = habit.goal;
-    //     habitToLoad.daysLogged = habit.daysLogged;
-    //     habitToLoad.daysLeft = habit.daysLeft;
-    //     habitToLoad.skipDays = habit.skipDays;
-    //     habitToLoad.streak = habit.streak;
-    //     habitToLoad.lastUpdated = habit.lastUpdated;
-    //     habitToLoad.createdAt = habit.createdAt;
-    //     habitToLoad.updatedToday = habit.updatedToday;
-    //     habitToLoad.completed = habit.completed;
+    // push retreived data into new array to hide userId
+    Array.from(habits).forEach((habit) => {
+        let habitToLoad = {};
+        habitToLoad.active = habit.active;
+        habitToLoad.description = habit.description;
+        habitToLoad.goal = habit.goal;
+        habitToLoad.daysLogged = habit.daysLogged;
+        habitToLoad.daysLeft = habit.daysLeft;
+        habitToLoad.skipDays = habit.skipDays;
+        habitToLoad.streak = habit.streak;
+        habitToLoad.lastUpdated = habit.lastUpdated;
+        habitToLoad.createdAt = habit.createdAt;
+        habitToLoad.updatedToday = habit.updatedToday;
+        habitToLoad.completed = habit.completed;
 
-    //     editedHabits.push(habitToLoad);
-    // });
+        editedHabits.push(habitToLoad);
+    });
 
-    // // check for any failed habits
-    // for (let i=0; i < editedHabits.length; i++) {
-    //     for (let k=0; k < failedHabits.length; k++) {
-    //         if (editedHabits[i].description == failedHabits[k]) {
-    //             editedHabits[i].failed = true;
-    //         } else {
-    //             editedHabits[i].failed = false;
-    //         }
-    //     }
-    // }
+    // check for any failed habits
+    for (let i=0; i < editedHabits.length; i++) {
+        for (let k=0; k < failedHabits.length; k++) {
+            if (editedHabits[i].description == failedHabits[k]) {
+                editedHabits[i].failed = true;
+            } else {
+                editedHabits[i].failed = false;
+            }
+        }
+    }
     
-    res.json({habits});
-    // res.json({editedHabits});
+    // res.json({habits});
+    res.json({editedHabits});
 };
 
 exports.addNewHabit = (req, res, next) => {
