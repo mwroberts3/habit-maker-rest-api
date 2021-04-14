@@ -25,10 +25,12 @@ exports.loadHabits = async (req, res, next) => {
                     habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
                         new: true
                     }).catch(err => console.log(err))
+                }
 
-                    if (habits[i].daysLogged >= habits[i].goal) {
-                        habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
-                    }
+                // check if passive habit has been completed
+                if (habits[i].daysLogged >= habits[i].goal) {
+                    console.log('passive hobby completed');
+                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err));
                 }
             }
 
