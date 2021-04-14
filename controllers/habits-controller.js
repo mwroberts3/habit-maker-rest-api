@@ -18,27 +18,27 @@ exports.loadHabits = async (req, res, next) => {
         if (diffDays > 0) {
             if (!habits[i].active) {
                 if (habits[i].updatedToday) {
-                    habits[i] = Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : {daysLogged: diffDays - 1, daysLeft: -diffDays}}, {
+                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : {daysLogged: diffDays - 1, daysLeft: -diffDays}}, {
                         new: true
                     }).catch(err => console.log(err))
                 } else {
-                    habits[i] = Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
+                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
                         new: true
                     }).catch(err => console.log(err))
 
-                    if (habits[i].daysLogged === habits[i].goal) {
-                        habits[i] = Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
+                    if (habits[i].daysLogged >= habits[i].goal) {
+                        habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
                     }
                 }
             }
 
             if (habits[i].active) {
-                habits[i] = Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLeft: -diffDays }}, {
+                habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLeft: -diffDays }}, {
                     new: true
                 }).catch(err => console.log(err))
             }
             
-            habits[i] = Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { updatedToday: false }, {
+            habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { updatedToday: false }, {
                 new: true
             }).catch(err => console.log(err))
         }
@@ -50,9 +50,7 @@ exports.loadHabits = async (req, res, next) => {
         }
     }
 
-    setTimeout(() => {
-        habits = Habit.find({ creator: req.userId}).catch(err => console.log(err));
-    },1000)
+    habits = Habit.find({ creator: req.userId}).catch(err => console.log(err));
 
     // push retreived data into new array to hide userId
     Array.from(habits).forEach((habit) => {
