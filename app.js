@@ -2,14 +2,15 @@ const express = require('express'),
 app = express();
 
 const mongoose = require('mongoose');
-
 const bodyParser = require('body-parser');
-
 const habitRoutes = require('./routes/habits-routes');
-
 const authRoutes = require('./routes/auth-routes');
 
 app.use(bodyParser.json()); //application/json
+
+app.get("/", (req, res) => {
+    res.send("Habit Maker Rest API");
+});
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
