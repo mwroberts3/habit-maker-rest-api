@@ -6,7 +6,8 @@ exports.loadHabits = async (req, res, next) => {
     let editedHabits = [];
     let failedHabits = [];
 
-    let habits = await Habit.find({ creator: req.userId});
+    // let habits = await Habit.find({ creator: req.userId});
+    let habits = await Habit.find({ creator: "603168f75359b2042c42b1d4"});
 
     habits = Array.from(habits);
 
