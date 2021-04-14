@@ -4,7 +4,7 @@ const router = express.Router();
 const habitController = require('../controllers/habits-controller');
 const tokenCheck = require('../middleware/token-check');
 
-router.get('/', habitController.loadHabits);
+router.get('/', tokenCheck, habitController.loadHabits);
 
 router.post('/add-habit', tokenCheck, habitController.addNewHabit);
 
