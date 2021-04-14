@@ -6,7 +6,7 @@ exports.loadHabits = async (req, res, next) => {
     let editedHabits = [];
     let failedHabits = [];
 
-    let habits = await Habit.find({ creator: req.userId});
+    let habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
     // let habits = await Habit.find({ creator: req.userId});
 
     habits = Array.from(habits);
@@ -21,14 +21,14 @@ exports.loadHabits = async (req, res, next) => {
                 if (habits[i].updatedToday) {
                     habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : {daysLogged: diffDays - 1, daysLeft: -diffDays}}, {
                         new: true
-                    })
+                    }).catch(err => console.log(err))
                 } else {
                     habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
                         new: true
-                    })
+                    }).catch(err => console.log(err))
 
                     if (habits[i].daysLogged === habits[i].goal) {
-                        habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true})
+                        habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
                     }
                 }
             }
@@ -36,12 +36,12 @@ exports.loadHabits = async (req, res, next) => {
             if (habits[i].active) {
                 habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLeft: -diffDays }}, {
                     new: true
-                })
+                }).catch(err => console.log(err))
             }
             
             habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { updatedToday: false }, {
                 new: true
-            })
+            }).catch(err => console.log(err))
         }
         
         // check if days passed has reached 0
@@ -51,7 +51,7 @@ exports.loadHabits = async (req, res, next) => {
         }
     }
 
-    habits = await Habit.find({ creator: req.userId});
+    habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
 
     // push retreived data into new array to hide userId
     Array.from(habits).forEach((habit) => {
