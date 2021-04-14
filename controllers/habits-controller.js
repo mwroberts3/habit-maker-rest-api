@@ -83,7 +83,7 @@ exports.loadHabits = async (req, res, next) => {
     // }
     
     // res.json({editedHabits});
-    res.json({message: "this is working"});
+    res.json({message: "this is working", userId: req.userId});
 };
 
 exports.addNewHabit = (req, res, next) => {
