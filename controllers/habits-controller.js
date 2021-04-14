@@ -48,7 +48,7 @@ exports.loadHabits = async (req, res, next) => {
         if (habits[i].daysLeft <= 0 && !habits[i].completed) {
             failedHabits.push(habits[i].description);
         }
-    // }
+    }
 
     // habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
 
