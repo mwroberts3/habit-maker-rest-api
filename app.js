@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
     next();
 });
 
-app.use(habitRoutes);
+app.use('/habits', habitRoutes);
 
 app.use(authRoutes);
 
