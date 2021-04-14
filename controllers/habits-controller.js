@@ -11,79 +11,79 @@ exports.loadHabits = async (req, res, next) => {
 
     habits = Array.from(habits);
 
-    for(let i = 0; i < habits.length; i++) {  
-        let diffTime = Math.abs(new Date(currentDate) - new Date(habits[i].lastUpdated));
-        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    // for(let i = 0; i < habits.length; i++) {  
+    //     let diffTime = Math.abs(new Date(currentDate) - new Date(habits[i].lastUpdated));
+    //     let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-        // check how many days have passed since last log in and adjust accordingly
-        if (diffDays > 0) {
-            if (!habits[i].active) {
-                if (habits[i].updatedToday) {
-                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : {daysLogged: diffDays - 1, daysLeft: -diffDays}}, {
-                        new: true
-                    }).catch(err => console.log(err))
-                } else {
-                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
-                        new: true
-                    }).catch(err => console.log(err))
+    //     // check how many days have passed since last log in and adjust accordingly
+    //     if (diffDays > 0) {
+    //         if (!habits[i].active) {
+    //             if (habits[i].updatedToday) {
+    //                 habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : {daysLogged: diffDays - 1, daysLeft: -diffDays}}, {
+    //                     new: true
+    //                 }).catch(err => console.log(err))
+    //             } else {
+    //                 habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
+    //                     new: true
+    //                 }).catch(err => console.log(err))
 
-                    if (habits[i].daysLogged === habits[i].goal) {
-                        habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
-                    }
-                }
-            }
+    //                 if (habits[i].daysLogged === habits[i].goal) {
+    //                     habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
+    //                 }
+    //             }
+    //         }
 
-            if (habits[i].active) {
-                habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLeft: -diffDays }}, {
-                    new: true
-                }).catch(err => console.log(err))
-            }
+    //         if (habits[i].active) {
+    //             habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLeft: -diffDays }}, {
+    //                 new: true
+    //             }).catch(err => console.log(err))
+    //         }
             
-            habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { updatedToday: false }, {
-                new: true
-            }).catch(err => console.log(err))
-        }
+    //         habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { updatedToday: false }, {
+    //             new: true
+    //         }).catch(err => console.log(err))
+    //     }
         
-        // check if days passed has reached 0
-        // goal has not been reached
-        if (habits[i].daysLeft <= 0 && !habits[i].completed) {
-            failedHabits.push(habits[i].description);
-        }
-    }
+    //     // check if days passed has reached 0
+    //     // goal has not been reached
+    //     if (habits[i].daysLeft <= 0 && !habits[i].completed) {
+    //         failedHabits.push(habits[i].description);
+    //     }
+    // }
 
-    habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
+    // habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
 
-    // push retreived data into new array to hide userId
-    Array.from(habits).forEach((habit) => {
-        let habitToLoad = {};
-        habitToLoad.active = habit.active;
-        habitToLoad.description = habit.description;
-        habitToLoad.goal = habit.goal;
-        habitToLoad.daysLogged = habit.daysLogged;
-        habitToLoad.daysLeft = habit.daysLeft;
-        habitToLoad.skipDays = habit.skipDays;
-        habitToLoad.streak = habit.streak;
-        habitToLoad.lastUpdated = habit.lastUpdated;
-        habitToLoad.createdAt = habit.createdAt;
-        habitToLoad.updatedToday = habit.updatedToday;
-        habitToLoad.completed = habit.completed;
+    // // push retreived data into new array to hide userId
+    // Array.from(habits).forEach((habit) => {
+    //     let habitToLoad = {};
+    //     habitToLoad.active = habit.active;
+    //     habitToLoad.description = habit.description;
+    //     habitToLoad.goal = habit.goal;
+    //     habitToLoad.daysLogged = habit.daysLogged;
+    //     habitToLoad.daysLeft = habit.daysLeft;
+    //     habitToLoad.skipDays = habit.skipDays;
+    //     habitToLoad.streak = habit.streak;
+    //     habitToLoad.lastUpdated = habit.lastUpdated;
+    //     habitToLoad.createdAt = habit.createdAt;
+    //     habitToLoad.updatedToday = habit.updatedToday;
+    //     habitToLoad.completed = habit.completed;
 
-        editedHabits.push(habitToLoad);
-    });
+    //     editedHabits.push(habitToLoad);
+    // });
 
-    // check for any failed habits
-    for (let i=0; i < editedHabits.length; i++) {
-        for (let k=0; k < failedHabits.length; k++) {
-            if (editedHabits[i].description == failedHabits[k]) {
-                editedHabits[i].failed = true;
-            } else {
-                editedHabits[i].failed = false;
-            }
-        }
-    }
+    // // check for any failed habits
+    // for (let i=0; i < editedHabits.length; i++) {
+    //     for (let k=0; k < failedHabits.length; k++) {
+    //         if (editedHabits[i].description == failedHabits[k]) {
+    //             editedHabits[i].failed = true;
+    //         } else {
+    //             editedHabits[i].failed = false;
+    //         }
+    //     }
+    // }
     
-    res.json({editedHabits});
-    // res.json({message: "this is working", userId: req.userId});
+    res.json({habits});
+    // res.json({editedHabits});
 };
 
 exports.addNewHabit = (req, res, next) => {
