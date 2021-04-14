@@ -51,7 +51,7 @@ exports.loadHabits = async (req, res, next) => {
     }
 
     setTimeout(() => {
-        habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
+        habits = Habit.find({ creator: req.userId}).catch(err => console.log(err));
     },1000)
 
     // push retreived data into new array to hide userId
