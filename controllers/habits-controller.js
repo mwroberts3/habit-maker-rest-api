@@ -7,48 +7,47 @@ exports.loadHabits = async (req, res, next) => {
     let failedHabits = [];
 
     let habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
-    // let habits = await Habit.find({ creator: req.userId});
 
     habits = Array.from(habits);
 
-    // for(let i = 0; i < habits.length; i++) {  
-    //     let diffTime = Math.abs(new Date(currentDate) - new Date(habits[i].lastUpdated));
-    //     let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    for(let i = 0; i < habits.length; i++) {  
+        let diffTime = Math.abs(new Date(currentDate) - new Date(habits[i].lastUpdated));
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    //     // check how many days have passed since last log in and adjust accordingly
-    //     if (diffDays > 0) {
-    //         if (!habits[i].active) {
-    //             if (habits[i].updatedToday) {
-    //                 habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : {daysLogged: diffDays - 1, daysLeft: -diffDays}}, {
-    //                     new: true
-    //                 }).catch(err => console.log(err))
-    //             } else {
-    //                 habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
-    //                     new: true
-    //                 }).catch(err => console.log(err))
+        // check how many days have passed since last log in and adjust accordingly
+        if (diffDays > 0) {
+            if (!habits[i].active) {
+                if (habits[i].updatedToday) {
+                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : {daysLogged: diffDays - 1, daysLeft: -diffDays}}, {
+                        new: true
+                    }).catch(err => console.log(err))
+                } else {
+                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
+                        new: true
+                    }).catch(err => console.log(err))
 
-    //                 if (habits[i].daysLogged === habits[i].goal) {
-    //                     habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
-    //                 }
-    //             }
-    //         }
+                    if (habits[i].daysLogged === habits[i].goal) {
+                        habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err))
+                    }
+                }
+            }
 
-    //         if (habits[i].active) {
-    //             habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLeft: -diffDays }}, {
-    //                 new: true
-    //             }).catch(err => console.log(err))
-    //         }
+            if (habits[i].active) {
+                habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLeft: -diffDays }}, {
+                    new: true
+                }).catch(err => console.log(err))
+            }
             
-    //         habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { updatedToday: false }, {
-    //             new: true
-    //         }).catch(err => console.log(err))
-    //     }
+            habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { updatedToday: false }, {
+                new: true
+            }).catch(err => console.log(err))
+        }
         
-    //     // check if days passed has reached 0
-    //     // goal has not been reached
-    //     if (habits[i].daysLeft <= 0 && !habits[i].completed) {
-    //         failedHabits.push(habits[i].description);
-    //     }
+        // check if days passed has reached 0
+        // goal has not been reached
+        if (habits[i].daysLeft <= 0 && !habits[i].completed) {
+            failedHabits.push(habits[i].description);
+        }
     // }
 
     // habits = await Habit.find({ creator: req.userId}).catch(err => console.log(err));
