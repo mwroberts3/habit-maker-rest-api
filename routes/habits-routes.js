@@ -4,12 +4,12 @@ const router = express.Router();
 const habitController = require('../controllers/habits-controller');
 const tokenCheck = require('../middleware/token-check');
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Timestamp');
-    next();
-});
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', '*');
+//     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Timestamp');
+//     next();
+// });
 
 router.get('/', tokenCheck, habitController.loadHabits);
 
