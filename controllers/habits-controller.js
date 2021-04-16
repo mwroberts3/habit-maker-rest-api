@@ -22,9 +22,12 @@ exports.loadHabits = async (req, res, next) => {
                         new: true
                     }).catch(err => console.log(err))
                 } else {
-                    habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
-                        new: true
-                    }).catch(err => console.log(err))
+                    // only update passive habit days logged if habit has not been completed
+                    if (!habits[i].completed) {
+                        habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description }, { lastUpdated: new Date(currentDate), $inc : { daysLogged: diffDays,daysLeft: -diffDays}}, {
+                            new: true
+                        }).catch(err => console.log(err))
+                    }
                 }
 
                 // check if passive habit has been completed
