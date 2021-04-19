@@ -52,7 +52,7 @@ exports.login = (req, res, next) => {
             const token = jwt.sign({ 
                 username: user.username, userId: user._id.toString()
             }, 'qwepoiasdlkjzxcmnb', 
-            {expiresIn: req.body.rememberMe ? '36h' : '2000'}
+            {expiresIn: req.body.rememberMe ? '36h' : '1h'}
             );
             req.userId = token.userId;
             res.status(200).json({token});
