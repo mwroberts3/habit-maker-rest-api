@@ -16,14 +16,14 @@ exports.signup = (req, res, next) => {
     let passwordHash = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 
     let user = new User({
-        email: req.body.email,
+        username: req.body.username,
         password: passwordHash,
     });
 
     user.save()
         .then(() => {
             const token = jwt.sign({ 
-                email: user.email, userId: user._id.toString()
+                username: user.username, userId: user._id.toString()
             }, 'qwepoiasdlkjzxcmnb', 
             {expiresIn: '1hr'}
             );
@@ -36,14 +36,12 @@ exports.signup = (req, res, next) => {
 exports.login = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        const error = new Error('invalid email');
+        const error = new Error('invalid username');
         error.statusCode = 422;
         throw error;
     };
-
-    console.log(req.body);
     
-    User.findOne({ email: req.body.email })
+    User.findOne({ username: req.body.username })
     .then((user) => {
         if (user) {
             if (!bcrypt.compareSync(req.body.password, user.password)) {
@@ -52,9 +50,9 @@ exports.login = (req, res, next) => {
                 throw error;
             }
             const token = jwt.sign({ 
-                email: user.email, userId: user._id.toString()
+                username: user.username, userId: user._id.toString()
             }, 'qwepoiasdlkjzxcmnb', 
-            {expiresIn: req.body.rememberMe ? '36h' : '1hr'}
+            {expiresIn: req.body.rememberMe ? '36h' : '2000'}
             );
             req.userId = token.userId;
             res.status(200).json({token});

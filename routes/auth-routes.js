@@ -9,14 +9,12 @@ const User = require('../model/user-model');
 
 router.put('/signup', 
 [
-    body('email')
-      .isEmail()
-      .withMessage('invalid email')
+    body('username')
       .custom((value) => {
-        return User.findOne({ email: value})
+        return User.findOne({ username: value})
           .then((result) => {
             if (result) {
-              throw new Error('user with email already exists');
+              throw new Error('username already exists');
             }
           })
       }),
@@ -37,9 +35,8 @@ authController.signup);
 
 router.post('/login',
  [
-    body('email')
+    body('username')
       .trim()
-      .isEmail()
  ]    
 , authController.login);
 

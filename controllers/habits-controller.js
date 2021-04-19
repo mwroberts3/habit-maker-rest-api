@@ -32,7 +32,6 @@ exports.loadHabits = async (req, res, next) => {
 
                 // check if passive habit has been completed
                 if (habits[i].daysLogged >= habits[i].goal) {
-                    console.log('passive hobby completed');
                     habits[i] = await Habit.findOneAndUpdate({ creator: req.userId, description: habits[i].description}, {completed: true}).catch(err => console.log(err));
                 }
             }
@@ -91,8 +90,6 @@ exports.loadHabits = async (req, res, next) => {
 };
 
 exports.addNewHabit = (req, res, next) => {
-    console.log(req.body.createdAtDate);
-
     const habit = new Habit({
         description: req.body.description,
         active: req.body.updateStyle == 'active' ? true : false,
@@ -120,7 +117,6 @@ exports.addNewHabit = (req, res, next) => {
 };
 
 exports.logHabit = async (req, res, next) => {
-    console.log(req.userId, req.body.habitDesc);
     let habitType;
 
     let habit = await Habit.findOne({ creator: req.userId, description: req.body.habitDesc });
@@ -164,10 +160,7 @@ exports.logHabit = async (req, res, next) => {
         habitToUpdate.updatedToday = habit.updatedToday;
         habitToUpdate.createdAt = habit.createdAt;
 
-        console.log(habitToUpdate);
         res.status(201).json(habitToUpdate);
-
-        console.log(new Date(habit.createdAt).getTime(), new Date(habit.lastUpdated).getTime());
     })
     .catch(err => {
         if (!err.statusCode) {
@@ -181,7 +174,6 @@ exports.timesUpLog = async (req, res, next) => {
     // active habits that aren't logged the previous day need to have a day subtracted from daysLeft
 
     let habits = Array.from(req.body);
-    console.log(habits[0].description.toString());
 
     for (let habit of habits) {
         await Habit.findOneAndUpdate({ creator: req.userId, description: habit.description.toString()}, { updatedToday: false }, {new: true});
