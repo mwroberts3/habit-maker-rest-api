@@ -10,7 +10,7 @@ app.use(bodyParser.json()); //application/json
 
 
 app.get("/", (req, res) => {
-    res.send("Habit Maker Rest API");
+    res.send("Habit Maker Rest API")
 });
     
     app.use((req, res, next) => {
